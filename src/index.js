@@ -70,15 +70,47 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { title, deadline } = request.body;
+  const { user } = request;
+  const { id } = request.params;
+
+  const todoWithId = user.todos.find(todo => todo.id === id)
+
+  if(!todoWithId) 
+    return response.status(404).json({error: "Not found to do"});
+
+  if(title) todoWithId.title = title ;
+  if(deadline) todoWithId.deadline = deadline;
+
+  return response.status(200).json(todoWithId);
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+
+  const todoWithId = user.todos.find(todo => todo.id === id)
+
+  if(!todoWithId) 
+    return response.status(404).json({error: "Not found to do"});
+
+  todoWithId.done = true;
+
+  return response.status(200).json(todoWithId);
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+
+  const todoWithId = user.todos.find(todo => todo.id === id)
+
+  if(!todoWithId) 
+    return response.status(404).json({error: "Not found to do"});
+
+  user.todos.splice(todoWithId, 1);
+
+  return response.status(200).json({status: "ok"});
 });
 
 module.exports = app;
